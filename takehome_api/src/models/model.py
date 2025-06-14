@@ -23,7 +23,7 @@ class Patient(db.Model):
     __tablename__ = "patients"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    # Per the Flask documentation, this is the "old" way. The more modern way is "mapped_column"
+    # Per the Flask SQLAlchemy documentation, this is the "old" way. The more modern way is "mapped_column"
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     # not everyone has an email...
