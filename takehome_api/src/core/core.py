@@ -1,6 +1,6 @@
 from takehome_api.src.config.config import get_logger
 from sqlalchemy.orm import Session
-import uuid
+from uuid import UUID
 
 from takehome_api.src.models.model import Patient, Provider, Appointment, State, Insurance, db
 from takehome_api.src.models.response_model import AppointmentResponse
@@ -39,26 +39,23 @@ class Scheduler:
         return AppointmentResponse(
             patient=patient.first_name + " " + patient.last_name,
             scheduled=True,
-            appointment_id=str(first_available_appointment.id),
+            appointment_id=first_available_appointment.id,
             provider=f"{available_provider.title} {available_provider.first_name} {available_provider.last_name}",
             time=first_available_appointment.time.strftime("%Y-%m-%d %H:%M:%S")
         )
 
-    def _set_appointment(self, appointment_id: str, patient_id: str) -> bool:
+    def _set_appointment(self, appointment_id: UUID, patient_id: UUID) -> bool:
         try:
-            appointment_uuid = uuid.UUID(appointment_id)
-            patient_uuid = uuid.UUID(str(patient_id))
-
             logger.debug(
-                f"Looking for appointment with ID: {appointment_uuid}")
+                f"Looking for appointment with ID: {appointment_id}")
             appointment = Appointment.query.where(
-                Appointment.id == appointment_uuid).first()
+                Appointment.id == appointment_id).first()
 
             if not appointment:
                 raise Exception(f"Appointment {appointment_id} not found")
 
-            logger.debug(f"Setting patient ID to: {patient_uuid}")
-            appointment.patient_id = patient_uuid
+            logger.debug(f"Setting patient ID to: {patient_id}")
+            appointment.patient_id = patient_id
             return True
         except Exception as e:
             logger.error("Error setting appointment: %s", e)

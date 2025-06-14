@@ -1,10 +1,11 @@
 from pydantic import BaseModel
+from uuid import UUID
 
 
 class AppointmentResponse(BaseModel):
     patient: str
     scheduled: bool
-    appointment_id: str
+    appointment_id: UUID
     provider: str
     time: str
 
