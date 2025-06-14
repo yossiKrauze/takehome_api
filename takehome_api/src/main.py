@@ -2,7 +2,7 @@ from takehome_api.src.config.database import db
 from instance.config import APP_CONFIG
 from flask_cors import CORS
 from flask import Flask, Response, request
-from takehome_api.src.core.core import schedule_appointment
+from takehome_api.src.core.core import Scheduler
 from takehome_api.src.config.config import get_logger
 
 logger = get_logger("main")
@@ -25,8 +25,9 @@ def create_app(config_name):
 
         try:
             patient_data = data["patient"]
-            appointment_response, success = schedule_appointment(
-                db.session, patient_data)
+            scheduler = Scheduler(db.session)
+            appointment_response, success = scheduler.schedule_appointment(
+                patient_data)
 
             if success:
                 return appointment_response.model_dump_json(), 200
